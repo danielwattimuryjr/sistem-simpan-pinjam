@@ -13,38 +13,43 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <x-nav-item>
+    <x-nav-item :href="route('dashboard')" :active="request()->routeIs('dashboard')">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Dashboard</span>
     </x-nav-item>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Data Master
-    </div>
+    @if (Auth::user()->hasRole('admin'))
+        <!-- Divider -->
+        <hr class="sidebar-divider">
 
-    <x-nav-item :href="route('nasabah.index')" :active="request()->routeIs('nasabah.*')">
-        <i class="fas fa-fw fa-users"></i>
-        <span>Nasabah</span>
-    </x-nav-item>
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Data Master
+        </div>
+
+        <x-nav-item :href="route('nasabah.index')" :active="request()->routeIs('nasabah.*')">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Nasabah</span>
+        </x-nav-item>
+    @endif
 
     <x-nav-item>
         <i class="fas fa-fw fa-hand-holding-usd"></i>
         <span>Pinjaman</span>
     </x-nav-item>
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Variabels
-    </div>
+    @if (Auth::user()->hasRole('admin'))
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Settings
+        </div>
 
-    <x-nav-item :href="route('criterias.index')" :active="request()->routeIs('criterias.*')">
-        <i class="fas fa-fw fa-users"></i>
-        <span>Kriteria</span>
-    </x-nav-item>
+        <x-nav-item :href="route('criterias.index')" :active="request()->routeIs('criterias.*')">
+            <i class="fas fa-fw fa-users"></i>
+            <span>Kriteria</span>
+        </x-nav-item>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

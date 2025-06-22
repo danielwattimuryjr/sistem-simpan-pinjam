@@ -30,9 +30,16 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'name'                      => ['required', 'string', 'max:255'],
+            'email'                     => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password'                  => ['required', Rules\Password::defaults()],
+            'nomor_induk_kependudukan'  => ['required', 'numeric', 'digits_between:10,20', 'unique:user_profiles'],
+            'nomor_rekening'            => ['required', 'numeric', 'digits_between:5,25', 'unique:user_profiles'],
+            'jenis_kelamin'             => ['required', 'in:l,p'],
+            'alamat'                    => ['required', 'string'],
+            'kecamatan'                 => ['required', 'string'],
+            'kabupaten'                 => ['required', 'string'],
+            'provinsi'                  => ['required', 'string'],
         ]);
 
         $user = User::create([
@@ -40,6 +47,16 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $user->profile()->create([
+            'nomor_induk_kependudukan' => $request->nomor_induk_kependudukan,
+            'nomor_rekening'           => $request->nomor_rekening,
+            'jenis_kelamin'            => $request->jenis_kelamin,
+            'alamat'                   => $request->alamat,
+            'kecamatan'                => $request->kecamatan,
+            'kabupaten'                => $request->kabupaten,
+            'provinsi'                 => $request->provinsi,
+        ]);
+        $user->addRole('nasabah');
 
         event(new Registered($user));
 

@@ -12,7 +12,9 @@ class CriteriaScore extends Model
         'criteria_category',
         'criteria_weight',
         'batas_bawah',
-        'score'
+        'score',
+        'table_reference',
+        'column_reference'
     ];
 
     public function criteria(): BelongsTo {

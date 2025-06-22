@@ -10,7 +10,9 @@ class Criteria extends Model
     protected $fillable = [
         'name',
         'category',
-        'weight'
+        'weight',
+        'table_reference',
+        'column_reference'
     ];
 
     public function scores(): HasMany {

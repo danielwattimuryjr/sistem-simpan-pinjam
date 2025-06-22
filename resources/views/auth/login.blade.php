@@ -1,47 +1,84 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="container-fluid p-0">
+        <div class="row no-gutters login-section">
+            <!-- KIRI - FORM -->
+            <div class="col-md-6 form-container">
+                <form class="w-75" method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <h2 class="mb-4 text-center">Login</h2>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Masukkan email">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" id="password" placeholder="Masukkan kata sandi">
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+                    <button type="submit" class="btn btn-success btn-block">Masuk</button>
+                    <p class="mt-3 text-center">Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a></p>
+                </form>
+            </div>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <div class="col-md-6 image-section d-none d-md-block" style="background-image: url('/img/auth.jpg');">
+                <div class="overlay"></div>
+
+                <div class="overlay-text">
+                    <h1>Selamat Datang di Aplikasi Koperasi BMT Al-Muqrin!</h1>
+                    <p>Menjalani ukhuwah, menjaga amanah</p>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
+    <x-slot name="styles">
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+            .login-section {
+                height: 100vh;
+                margin: 0;
+            }
+            .form-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                padding: 0;
+            }
+            .image-section {
+                position: relative;
+                background-size: cover;
+                background-position: center;
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                color: white;
+            }
+            .overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.6); /* overlay gelap */
+            }
+            .overlay-text {
+                position: absolute;
+                top: 50%;
+                left: 10%;
+                z-index: 2;
+                transform: translateY(-50%)
+            }
+        </style>
+    </x-slot>
 </x-guest-layout>
