@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NasabahController;
 use App\Http\Controllers\CriteriaController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\SchemaController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,20 +12,32 @@ Route::middleware('auth')->group(function () {
         return view('home');
     })->name('dashboard');
 
-    Route::prefix('nasabah')->name('nasabah.')->group(function() {
-        Route::get('/', [NasabahController::class, 'index'])->name('index');
-        Route::get('create', [NasabahController::class, 'create'])->name('create');
-        Route::post('create', [NasabahController::class, 'store'])
-        ->name('store');
-        Route::get('edit/{user}', [NasabahController::class, 'edit'])->name('edit');
-        Route::put('edit/{user}', [NasabahController::class, 'update'])->name('update');
-        Route::delete('destroy/{user}', [NasabahController::class, 'destroy'])->name('destroy');
+    Route::group(['middleware' => ['role:admin']], function() {
+        Route::resource('nasabah', NasabahController::class)
+            ->except(['show'])
+            ->parameters([
+                'nasabah' => 'user'
+            ]);
+
+        Route::resource('criterias', CriteriaController::class)
+            ->except(['show']);
+
+        Route::resource('pinjaman', LoanController::class)
+            ->except(['index', 'show', 'create', 'store'])
+            ->parameters([
+                'pinjaman' => 'loan'
+            ]);
+
+        Route::get('/schema/tables', [SchemaController::class, 'getTables']);
+        Route::get('/schema/columns/{table}', [SchemaController::class, 'getColumns']);
     });
 
-    Route::resource('criterias', CriteriaController::class)->except(['show']);
-
-    Route::get('/schema/tables', [SchemaController::class, 'getTables']);
-    Route::get('/schema/columns/{table}', [SchemaController::class, 'getColumns']);
+    Route::resource('pinjaman', LoanController::class)
+        ->only(['index', 'show', 'create', 'store'])
+        ->parameters([
+            'pinjaman' => 'loan'
+        ]);
+    Route::patch('pinjaman/{loan}/cancel', [LoanController::class, 'cancel'])->name('pinjaman.cancel');
 });
 
 Route::middleware('auth')->group(function () {

@@ -34,7 +34,7 @@
         </x-nav-item>
     @endif
 
-    <x-nav-item>
+    <x-nav-item :href="route('pinjaman.index')" :active="request()->routeIs('pinjaman.*')">
         <i class="fas fa-fw fa-hand-holding-usd"></i>
         <span>Pinjaman</span>
     </x-nav-item>
