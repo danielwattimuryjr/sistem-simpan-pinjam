@@ -14,8 +14,8 @@
 
     <!-- Nav Item - Dashboard -->
     <x-nav-item>
-      <i class="fas fa-fw fa-tachometer-alt"></i>
-      <span>Dashboard</span>
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Dashboard</span>
     </x-nav-item>
 
     <!-- Divider -->
@@ -27,13 +27,23 @@
     </div>
 
     <x-nav-item :href="route('nasabah.index')" :active="request()->routeIs('nasabah.*')">
-      <i class="fas fa-fw fa-users"></i>
-      <span>Nasabah</span>
+        <i class="fas fa-fw fa-users"></i>
+        <span>Nasabah</span>
     </x-nav-item>
 
     <x-nav-item>
-      <i class="fas fa-fw fa-hand-holding-usd"></i>
-      <span>Pinjaman</span>
+        <i class="fas fa-fw fa-hand-holding-usd"></i>
+        <span>Pinjaman</span>
+    </x-nav-item>
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Variabels
+    </div>
+
+    <x-nav-item :href="route('criterias.index')" :active="request()->routeIs('criterias.*')">
+        <i class="fas fa-fw fa-users"></i>
+        <span>Kriteria</span>
     </x-nav-item>
 
     <!-- Divider -->

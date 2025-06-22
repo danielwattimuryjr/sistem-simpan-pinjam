@@ -24,16 +24,16 @@ class StoreNasabahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
-            'nomor_induk_kependudukan' => ['required', 'numeric', 'digits_between:10,20', 'unique:user_profiles'],
-            'nomor_rekening' => ['required', 'numeric', 'digits_between:5,25', 'unique:user_profiles'],
-            'jenis_kelamin' => ['required', 'in:l,p'],
-            'alamat' => ['required', 'string'],
-            'kecamatan' => ['required', 'string'],
-            'kabupaten' => ['required', 'string'],
-            'provinsi' => ['required', 'string'],
+            'name'                      => ['required', 'string', 'max:255'],
+            'email'                     => ['required', 'email', 'max:255', 'unique:users'],
+            'password'                  => ['required', 'string', 'min:8'],
+            'nomor_induk_kependudukan'  => ['required', 'numeric', 'digits_between:10,20', 'unique:user_profiles'],
+            'nomor_rekening'            => ['required', 'numeric', 'digits_between:5,25', 'unique:user_profiles'],
+            'jenis_kelamin'             => ['required', 'in:l,p'],
+            'alamat'                    => ['required', 'string'],
+            'kecamatan'                 => ['required', 'string'],
+            'kabupaten'                 => ['required', 'string'],
+            'provinsi'                  => ['required', 'string'],
         ];
     }
 }

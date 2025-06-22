@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NasabahController;
+use App\Http\Controllers\CriteriaController;
+use App\Http\Controllers\SchemaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +23,11 @@ Route::prefix('nasabah')->name('nasabah.')->group(function() {
     Route::put('edit/{user}', [NasabahController::class, 'update'])->name('update');
     Route::delete('destroy/{user}', [NasabahController::class, 'destroy'])->name('destroy');
 });
+
+Route::resource('criterias', CriteriaController::class)->except(['show']);
+
+Route::get('/schema/tables', [SchemaController::class, 'getTables']);
+Route::get('/schema/columns/{table}', [SchemaController::class, 'getColumns']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

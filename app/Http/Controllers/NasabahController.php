@@ -17,7 +17,7 @@ class NasabahController extends Controller
     public function index()
     {
         $users = User::with('profile')->whereHasRole('nasabah')->get();
-        return view('get-all-nasabah', ['users' => $users]);
+        return view('nasabah.get-all-nasabah', ['users' => $users]);
     }
 
     /**
@@ -25,7 +25,7 @@ class NasabahController extends Controller
      */
     public function create()
     {
-        return view('post-nasabah');
+        return view('nasabah.post-nasabah');
     }
 
     /**
@@ -62,7 +62,7 @@ class NasabahController extends Controller
     public function edit(User $user)
     {
         $user->load('profile');
-        return view('put-nasabah', ['user' => $user]);
+        return view('nasabah.put-nasabah', ['user' => $user]);
     }
 
     /**
