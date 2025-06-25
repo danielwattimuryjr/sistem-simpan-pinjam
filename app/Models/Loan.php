@@ -18,4 +18,8 @@ class Loan extends Model
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
     }
+
+    public function evaluation() {
+        return $this->hasOne(LoanEvaluation::class);
+    }
 }

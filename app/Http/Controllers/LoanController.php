@@ -6,6 +6,7 @@ use App\Http\Requests\StoreLoanRequest;
 use App\Http\Requests\UpdateLoanRequest;
 use App\Models\Loan;
 use Illuminate\Support\Facades\Auth;
+use App\Services\LoanEvaluator;
 
 class LoanController extends Controller
 {
@@ -14,9 +15,17 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $loans = Auth::user()->hasRole('admin') ? Loan::with('user.profile')->get() : Auth::user()->loans()->with('user.profile')->get();
+        if (Auth::user()->hasRole('admin')) {
+        $loans = \App\Models\Loan::with(['user.profile', 'evaluation'])
+            ->whereHas('evaluation')
+            ->get()
+            ->sortByDesc(fn($loan) => $loan->evaluation->normalized_wp ?? 0)
+            ->values();
+        } else {
+            $loans = Auth::user()->loans()->with(['user.profile', 'evaluation'])->get();
+        }
 
-        return view('pinjaman.get-all-pinjaman', ['loans' => $loans]);
+        return view('pinjaman.get-all-pinjaman', compact('loans'));
     }
 
     /**
@@ -35,6 +44,7 @@ class LoanController extends Controller
         $validated = $request->validated();
 
         $loan = Auth::user()->loans()->create($validated);
+        app(LoanEvaluator::class)->evaluate($loan);
 
         $flashMessage = 'Data pinjaman berhasil diajukan';
 
@@ -87,5 +97,24 @@ class LoanController extends Controller
         $flashMessage = 'Pengajuan pinjaman berhasil dibatalkan';
 
         return to_route('pinjaman.index')->with('success', $flashMessage);
+    }
+    
+    public function normalize()
+    {
+        (new LoanEvaluator())->normalizeAllEvaluations();
+
+        return redirect()->back()->with('success', 'Normalisasi berhasil!');
+    }
+
+    public function approve(Loan $loan)
+    {
+        $loan->update(['status' => 'approved']);
+        return redirect()->back()->with('success', 'Pinjaman disetujui.');
+    }
+
+    public function reject(Loan $loan)
+    {
+        $loan->update(['status' => 'rejected']);
+        return redirect()->back()->with('success', 'Pinjaman ditolak.');
     }
 }

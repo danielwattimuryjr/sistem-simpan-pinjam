@@ -1,11 +1,6 @@
 <x-app-layout>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Data Kriteria Penilaian</h1>
-
-        <a href="{{ route('criterias.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i>
-            Tambah Faktor Penilaian
-        </a>
     </div>
 
     <div class="row">
@@ -48,15 +43,8 @@
                                             <a href="{{ route('criterias.edit', $criteria) }}"
                                                 class="btn btn-warning btn-sm mr-2">
                                                 <i class="fas fa-edit fa-sm"></i>
+                                                Edit
                                             </a>
-
-                                            <form method="POST" action="{{ route('criterias.destroy', $criteria) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash fa-sm"></i>
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

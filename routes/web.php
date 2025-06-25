@@ -40,6 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('pinjaman/{loan}/cancel', [LoanController::class, 'cancel'])->name('pinjaman.cancel');
 });
 
+Route::post('/loans/evaluations/normalize', [LoanController::class, 'normalize'])->name('loans.normalize');
+Route::post('/admin/pinjaman/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
+Route::post('/admin/pinjaman/{loan}/reject', [LoanController::class, 'reject'])->name('loans.reject');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

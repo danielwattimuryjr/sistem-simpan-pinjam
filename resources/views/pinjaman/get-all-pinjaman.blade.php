@@ -21,6 +21,15 @@
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Tabel Data Pinjaman</h6>
+
+                    @if (Auth::user()->hasRole('admin'))
+                        <form method="POST" action="{{ route('loans.normalize') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-sync-alt fa-sm"></i> Normalisasi WP
+                            </button>
+                        </form>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -34,20 +43,28 @@
                                     <td>Jumlah Tanggungan</td>
                                     <td>Jaminan</td>
                                     <td>Jumlah Pinjaman</td>
+                                    @if (Auth::user()->hasRole('admin'))
+                                    <td>Nilai WP</td>
+                                    <td>Normalized WP</td>
+                                    @endif
                                     <td>Status</td>
                                     <td>Actions</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($loans as $index => $loan)
+                                @foreach($loans as $loan)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $loan->user->name }}</td>
-                                    <td>{{ $loan->user->profile->nomor_rekening}}</td>
-                                    <td>{{ $loan->pendapatan }}</td>
-                                    <td>{{ $loan->jumlah_tanggungan }}</td>
-                                    <td>{{ $loan->jaminan }}</td>
-                                    <td>{{ $loan->jumlah_pinjaman }}</td>
+                                    <td>{{ $loop->iteration}}</td>
+                                    <td>{{ $loan->user->name}}</td>
+                                    <td>{{ $loan->user->profile?->nomor_rekening}}</td>
+                                    <td>{{ $loan->pendapatan}}</td>
+                                    <td>{{ $loan->jumlah_tanggungan}}</td>
+                                    <td>{{ $loan->jaminan}}</td>
+                                    <td>{{ $loan->jumlah_pinjaman}}</td>
+                                    @if (Auth::user()->hasRole('admin'))
+                                    <td>{{ number_format($loan->evaluation->nilai_wp ?? 0, 6) }}</td>
+                                    <td>{{ number_format($loan->evaluation->normalized_wp ?? 0, 6) }}</td>
+                                    @endif
                                     <td>
                                         @if($loan->status === 'approved')
                                         <span class="text-success font-italic">Disetujui</span>
@@ -61,30 +78,29 @@
                                     </td>
                                     <td>
                                         @if (Auth::user()->hasRole('admin'))
-                                        <div class="d-flex flex-row align-items-center">
-                                            <a href="{{ route('pinjaman.edit', $loan) }}"
-                                                class="btn btn-warning btn-sm mr-2">
-                                                <i class="fas fa-edit fa-sm"></i>
-                                            </a>
+                                            @if($loan->status === 'pending')
+                                                <form method="POST" action="{{ route('loans.approve', $loan) }}" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success">Setujui</button>
+                                                </form>
 
-                                            <form method="POST" action="{{ route('pinjaman.destroy', $loan) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash fa-sm"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                                <form method="POST" action="{{ route('loans.reject', $loan) }}" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-danger">Tolak</button>
+                                                </form>
+                                            @else
+                                                <span>-</span>
+                                            @endif
                                         @else
-                                        @if($loan->status === 'pending')
-                                        <form method="POST" action="{{ route('pinjaman.cancel', $loan) }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-ban fa-sm"></i>
-                                            </button>
-                                        </form>
-                                        @endif
+                                            @if($loan->status === 'pending')
+                                                <form method="POST" action="{{ route('pinjaman.cancel', $loan) }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-ban fa-sm"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>

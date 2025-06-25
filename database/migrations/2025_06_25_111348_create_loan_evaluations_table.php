@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('criteria_scores', function (Blueprint $table) {
+        Schema::create('loan_evaluations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('criteria_id')
-                ->nullable()
-                ->constrained('criterias')
+            $table->foreignId('loan_id')
+                ->constrained('loans')
                 ->cascadeOnDelete();
-            $table->decimal('batas_bawah', 12, 2)->nullable();
-            $table->integer('score');
+            $table->decimal('nilai_wp', 12, 6);
+            $table->decimal('normalized_wp', 12, 6)->nullable();
+            $table->json('details');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('criteria_scores');
+        Schema::dropIfExists('loan_evaluations');
     }
 };

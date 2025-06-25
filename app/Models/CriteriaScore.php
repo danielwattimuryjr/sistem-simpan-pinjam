@@ -8,13 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CriteriaScore extends Model
 {
     protected $fillable = [
-        'criteria_name',
-        'criteria_category',
-        'criteria_weight',
         'batas_bawah',
-        'score',
-        'table_reference',
-        'column_reference'
+        'score'
     ];
 
     public function criteria(): BelongsTo {

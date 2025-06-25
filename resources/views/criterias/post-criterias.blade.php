@@ -44,26 +44,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="form-group">
-                            <label>Table Reference</label>
-                            <select name="table_reference" id="table-reference" class="form-control @error('table_reference') is-invalid @enderror">
-                                <option value="">-- PILIH TABLE --</option>
-                            </select>
-                            @error('table_reference')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="column">Kolom</label>
-                            <select name="column_reference" id="column-reference" class="form-control @error('column_reference') is-invalid @enderror" disabled>
-                                <option value="">-- PILIH KOLOM --</option>
-                            </select>
-                            @error('column_reference')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                     </div>
                 </div>
 
@@ -95,7 +75,7 @@
                                         <input type="number" step="any"
                                             name="scores[{{ $i }}][skor]"
                                             class="form-control @error("scores.$i.skor") is-invalid @enderror"
-                                            value="{{ old("scores.$i.skor", $i) }}">
+                                            value="{{ old("scores.$i.skor", $i) }}" readonly>
                                         @error("scores.$i.skor")
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

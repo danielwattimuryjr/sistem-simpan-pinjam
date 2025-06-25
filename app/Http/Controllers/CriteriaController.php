@@ -36,19 +36,12 @@ class CriteriaController extends Controller
         $criteria = Criteria::create([
             'name'      => $validated['name'],
             'category'  => $validated['category'],
-            'weight'    => $validated['weight'],
-            'table_reference'   => $validated['table_reference'],
-            'column_reference'  => $validated['column_reference']
+            'weight'    => $validated['weight']
         ]);
         foreach ($validated['scores'] as $row) {
             $criteria->scores()->create([
-                'criteria_name'     => $criteria->name,
-                'criteria_category' => $criteria->category,
-                'criteria_weight'   => $criteria->weight,
                 'batas_bawah'       => $row['batas_bawah'],
-                'score'             => $row['skor'],
-                'table_reference'   => $criteria->table_reference,
-                'column_reference'  => $criteria->column_reference
+                'score'             => $row['skor']
             ]);
         }
 
@@ -78,19 +71,12 @@ class CriteriaController extends Controller
             'name'              => $validated['name'],
             'category'          => $validated['category'],
             'weight'            => $validated['weight'],
-            'table_reference'   => $validated['table_reference'],
-            'column_reference'  => $validated['column_reference']
         ]);
         $criteria->scores()->delete();
         foreach ($validated['scores'] as $row) {
             $criteria->scores()->create([
-                'criteria_name'     => $criteria->name,
-                'criteria_category' => $criteria->category,
-                'criteria_weight'   => $criteria->weight,
                 'batas_bawah'       => $row['batas_bawah'],
-                'score'             => $row['skor'],
-                'table_reference'   => $criteria->table_reference,
-                'column_reference'  => $criteria->column_reference
+                'score'             => $row['skor']
             ]);
         }
 
