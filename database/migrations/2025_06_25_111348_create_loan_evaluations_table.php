@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('nilai_wp', 12, 6);
             $table->decimal('normalized_wp', 12, 6)->nullable();
             $table->json('details');
+            $table->string('criteria_hash')->nullable();
+            $table->timestamp('evaluated_at')->nullable();
             $table->timestamps();
         });
     }

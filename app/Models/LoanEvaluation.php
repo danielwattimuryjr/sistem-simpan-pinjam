@@ -11,6 +11,8 @@ class LoanEvaluation extends Model
         'nilai_wp',
         'normalized_wp',
         'details',
+        'criteria_hash',
+        'evaluated_at'
     ];
 
     protected function casts(): array {

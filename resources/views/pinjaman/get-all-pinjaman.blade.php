@@ -2,114 +2,82 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">
             @if (Auth::user()->hasRole('admin'))
-            Data Pengajuan Pinjaman
+                Data Ranking Pinjaman Berdasarkan WP
             @else
-            Data Peminjaman Pengguna
+                Data Peminjaman Pengguna
             @endif
         </h1>
 
         @if (Auth::user()->hasRole('nasabah'))
-        <a href="{{ route('pinjaman.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i>
-            Ajukan Pinjaman
-        </a>
+            <a href="{{ route('pinjaman.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i>
+                Ajukan Pinjaman
+            </a>
         @endif
     </div>
 
     <div class="row">
         <div class="col">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Tabel Data Pinjaman</h6>
+            @if(Auth::user()->hasRole('admin'))
+                {{-- BATCH AKTIF --}}
+                @if($activeBatches->isNotEmpty())
+                    <h5 class="mb-3 font-weight-bold text-primary">Batch Aktif</h5>
+                    @include('pinjaman.partials.evaluation-accordion', [
+                        'groupedEvaluations' => $activeBatches,
+                        'accordionIdPrefix' => 'aktif',
+                    ])
+                @endif
 
-                    @if (Auth::user()->hasRole('admin'))
-                        <form method="POST" action="{{ route('loans.normalize') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-sync-alt fa-sm"></i> Normalisasi WP
-                            </button>
-                        </form>
-                    @endif
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <td>#</td>
-                                    <td>Nama Nasabah</td>
-                                    <td>Nomor Rekening</td>
-                                    <td>Pendapatan</td>
-                                    <td>Jumlah Tanggungan</td>
-                                    <td>Jaminan</td>
-                                    <td>Jumlah Pinjaman</td>
-                                    @if (Auth::user()->hasRole('admin'))
-                                    <td>Nilai WP</td>
-                                    <td>Normalized WP</td>
-                                    @endif
-                                    <td>Status</td>
-                                    <td>Actions</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($loans as $loan)
-                                <tr>
-                                    <td>{{ $loop->iteration}}</td>
-                                    <td>{{ $loan->user->name}}</td>
-                                    <td>{{ $loan->user->profile?->nomor_rekening}}</td>
-                                    <td>{{ $loan->pendapatan}}</td>
-                                    <td>{{ $loan->jumlah_tanggungan}}</td>
-                                    <td>{{ $loan->jaminan}}</td>
-                                    <td>{{ $loan->jumlah_pinjaman}}</td>
-                                    @if (Auth::user()->hasRole('admin'))
-                                    <td>{{ number_format($loan->evaluation->nilai_wp ?? 0, 6) }}</td>
-                                    <td>{{ number_format($loan->evaluation->normalized_wp ?? 0, 6) }}</td>
-                                    @endif
-                                    <td>
-                                        @if($loan->status === 'approved')
-                                        <span class="text-success font-italic">Disetujui</span>
-                                        @elseif($loan->status === 'rejected')
-                                        <span class="text-danger font-italic">Ditolak</span>
-                                        @elseif($loan->status === 'canceled')
-                                        <span class="text-danger font-italic">Dibatalkan</span>
-                                        @else
-                                        <span class="text-secondary font-italic">Menunggu Persetujuan</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if (Auth::user()->hasRole('admin'))
-                                            @if($loan->status === 'pending')
-                                                <form method="POST" action="{{ route('loans.approve', $loan) }}" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success">Setujui</button>
-                                                </form>
-
-                                                <form method="POST" action="{{ route('loans.reject', $loan) }}" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-danger">Tolak</button>
-                                                </form>
-                                            @else
-                                                <span>-</span>
-                                            @endif
-                                        @else
-                                            @if($loan->status === 'pending')
-                                                <form method="POST" action="{{ route('pinjaman.cancel', $loan) }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-ban fa-sm"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                {{-- RIWAYAT --}}
+                @if($archivedBatches->isNotEmpty())
+                    <h5 class="mt-5 mb-3 font-weight-bold text-secondary">Riwayat Evaluasi</h5>
+                    @include('pinjaman.partials.evaluation-accordion', [
+                        'groupedEvaluations' => $archivedBatches,
+                        'accordionIdPrefix' => 'arsip',
+                    ])
+                @endif
+            @else
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Tabel Data Pinjaman Anda</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Pendapatan</th>
+                                        <th>Tanggungan</th>
+                                        <th>Jaminan</th>
+                                        <th>Jumlah</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($loans as $loan)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ number_format($loan->pendapatan) }}</td>
+                                        <td>{{ $loan->jumlah_tanggungan }}</td>
+                                        <td>{{ number_format($loan->jaminan) }}</td>
+                                        <td>{{ number_format($loan->jumlah_pinjaman) }}</td>
+                                        <td>
+                                            @switch($loan->status)
+                                                @case('approved') <span class="text-success font-italic">Disetujui</span> @break
+                                                @case('rejected') <span class="text-danger font-italic">Ditolak</span> @break
+                                                @case('canceled') <span class="text-danger font-italic">Dibatalkan</span> @break
+                                                @default <span class="text-secondary font-italic">Menunggu</span>
+                                            @endswitch
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 

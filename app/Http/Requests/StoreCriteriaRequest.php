@@ -13,8 +13,8 @@ class StoreCriteriaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-         // return Auth::check() && Auth::user()->hasRole('admin');
-        return true;
+        return Auth::check() && Auth::user()->hasRole('admin');
+        // return true;
     }
 
     /**

@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LaratrustSeeder::class,
             CriteriaSeeder::class,
-            LoanSeeder::class,
+            // LoanSeeder::class,
         ]);
         
         User::factory()->create([

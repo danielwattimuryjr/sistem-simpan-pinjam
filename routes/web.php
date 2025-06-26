@@ -41,8 +41,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/loans/evaluations/normalize', [LoanController::class, 'normalize'])->name('loans.normalize');
-Route::post('/admin/pinjaman/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
-Route::post('/admin/pinjaman/{loan}/reject', [LoanController::class, 'reject'])->name('loans.reject');
+Route::patch('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
+Route::patch('/loans/{loan}/reject', [LoanController::class, 'reject'])->name('loans.reject');
+Route::get('/pinjaman/export/{hash}/{type}', [LoanController::class, 'export'])->name('loans.export');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
