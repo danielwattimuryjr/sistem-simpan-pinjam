@@ -1,10 +1,10 @@
 <!-- Sidebar -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav sidebar bg-gradient-primary sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <div class="sidebar-brand-icon">
+            <img src="/logo.jpeg" alt="Logo" width="50">
         </div>
         <div class="sidebar-brand-text mx-3">BMT Al-Muqrin</div>
     </a>
@@ -46,7 +46,7 @@
         </div>
 
         <x-nav-item :href="route('criterias.index')" :active="request()->routeIs('criterias.*')">
-            <i class="fas fa-fw fa-users"></i>
+            <i class="fas fa-fw fa-sliders-h"></i>
             <span>Kriteria</span>
         </x-nav-item>
     @endif

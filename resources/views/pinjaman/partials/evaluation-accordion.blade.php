@@ -5,12 +5,12 @@
 <div class="accordion" id="{{ $accordionId }}">
    @foreach($groupedEvaluations as $groupKey => $evaluations)
         @php
-          [$hash, $evaluatedAt] = explode('|', $groupKey);
-          $accordionIndex = $loop->index;
-          $accordionItemId = "collapse-{$accordionId}-{$accordionIndex}";
-          $isNormalized = $evaluations->sum('normalized_wp') > 0;
-          $latestEvaluatedAt = \App\Models\LoanEvaluation::max('evaluated_at');
-          $details = $evaluations->first()->details ?? [];
+            [$hash, $evaluatedAt] = explode('|', $groupKey);
+            $accordionIndex = $loop->index;
+            $accordionItemId = "collapse-{$accordionId}-{$accordionIndex}";
+            $isNormalized = $evaluations->sum('normalized_wp') > 0;
+            $latestEvaluatedAt = \App\Models\LoanEvaluation::max('evaluated_at');
+            $details = $evaluations->first()->details ?? [];
         @endphp
 
         <div class="card">
@@ -33,7 +33,7 @@
                 </div>
 
                 @if (!$isNormalized)
-                    <form method="POST" action="{{ route('loans.normalize') }}">
+                    <form method="POST" action="{{ route('pinjaman.normalize') }}">
                         @csrf
                         <input type="hidden" name="criteria_hash" value="{{ $hash }}">
                         <button type="submit" class="btn btn-sm btn-secondary">
@@ -42,13 +42,13 @@
                     </form>
                 @else
                     <div class="btn-group">
-                        <a href="{{ route('loans.export', ['hash' => $hash, 'type' => 'xlsx']) }}" class="btn btn-sm btn-outline-success">
+                        <a href="{{ route('pinjaman.export', ['hash' => $hash, 'type' => 'xlsx']) }}" class="btn btn-sm btn-outline-success">
                             <i class="fas fa-file-excel"></i> Excel
                         </a>
-                        <a href="{{ route('loans.export', ['hash' => $hash, 'type' => 'csv']) }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('pinjaman.export', ['hash' => $hash, 'type' => 'csv']) }}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-file-csv"></i> CSV
                         </a>
-                        <a href="{{ route('loans.export', ['hash' => $hash, 'type' => 'pdf']) }}" class="btn btn-sm btn-outline-danger">
+                        <a href="{{ route('pinjaman.export', ['hash' => $hash, 'type' => 'pdf']) }}" class="btn btn-sm btn-outline-danger">
                             <i class="fas fa-file-pdf"></i> PDF
                         </a>
                     </div>
@@ -62,7 +62,6 @@
                     @include('pinjaman.partials.evaluation-table', [
                         'evaluations' => $evaluations,
                         'isNormalized' => $isNormalized,
-                        'criteriaDetails' => $evaluations->first()->details ?? [],
                     ])
                 </div>
             </div>

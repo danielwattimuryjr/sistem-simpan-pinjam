@@ -38,7 +38,13 @@ class LoanController extends Controller
                 return $evaluations->every(fn ($e) => $e->loan->status !== 'pending');
             });
 
-            return view('pinjaman.get-all-pinjaman', compact('activeBatches', 'archivedBatches'));
+            $criteriaDetails = Criteria::get();
+
+            return view('pinjaman.get-all-pinjaman', [
+                'activeBatches' => $activeBatches,
+                'archivedBatches' => $archivedBatches,
+                'criteriaDetails' => $criteriaDetails,
+            ]);
         } else {
             $loans = Auth::user()->loans()->with(['user.profile', 'evaluation'])->get();
             return view('pinjaman.get-all-pinjaman', compact('loans'));
@@ -67,54 +73,6 @@ class LoanController extends Controller
         app(LoanEvaluator::class)->evaluate($loan, $batchEvaluatedAt);
 
         $flashMessage = 'Data pinjaman berhasil diajukan';
-
-        return to_route('pinjaman.index')->with('success', $flashMessage);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateLoanRequest $request, Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Loan $loan)
-    {
-        $loan->delete();
-
-        $flashMessage = 'Data pinjaman berhasil dihapus';
-
-        return to_route('pinjaman.index')->with('success', $flashMessage);
-    }
-
-    /**
-     * Update loan status to cancel
-     */
-    public function cancel(Loan $loan)
-    {
-        $loan->update(['status' => 'canceled']);
-
-        $flashMessage = 'Pengajuan pinjaman berhasil dibatalkan';
 
         return to_route('pinjaman.index')->with('success', $flashMessage);
     }

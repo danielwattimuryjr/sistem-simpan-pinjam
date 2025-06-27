@@ -1,15 +1,15 @@
-@if(!empty($criteriaDetails))
+@if($criteriaDetails->isNotEmpty())
     <div class="mb-3">
-        <h6 class="font-weight-bold">Informasi Kriteria:</h6>
-        <ul class="mb-0">
+        <h6 class="font-weight-bold">Informasi Kriteria dan Skor:</h6>
+        <ol class="pl-3">
             @foreach($criteriaDetails as $criteria)
                 <li>
-                    {{ $criteria['name'] }} 
-                    (Kategori: {{ ucfirst($criteria['category']) }}, 
-                    Bobot: {{ number_format($criteria['weight'], 2) }})
+                    <strong>{{ $criteria->name }}</strong> 
+                    (Kategori: {{ ucfirst($criteria->category) }}, 
+                    Bobot: {{ number_format($criteria->weight, 2) }})
                 </li>
             @endforeach
-        </ul>
+        </ol>
     </div>
 @endif
 
@@ -62,7 +62,7 @@
                     </td>
                     <td>
                         @if($loan->status === 'pending')
-                            <form method="POST" action="{{ route('loans.approve', $loan) }}" class="d-inline">
+                            <form method="POST" action="{{ route('pinjaman.approve', $loan) }}" class="d-inline">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-success" @if(!$isNormalized) disabled @endif>
