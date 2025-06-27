@@ -12,8 +12,8 @@ class StoreNasabahRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // return Auth::check() && Auth::user()->hasRole('admin');
-        return true;
+        return Auth::check() && Auth::user()->hasRole('admin');
+        // return true;
     }
 
     /**
@@ -27,8 +27,8 @@ class StoreNasabahRequest extends FormRequest
             'name'                      => ['required', 'string', 'max:255'],
             'email'                     => ['required', 'email', 'max:255', 'unique:users'],
             'password'                  => ['required', 'string', 'min:8'],
-            'nomor_induk_kependudukan'  => ['required', 'numeric', 'digits_between:10,20', 'unique:user_profiles'],
-            'nomor_rekening'            => ['required', 'numeric', 'digits_between:5,25', 'unique:user_profiles'],
+            'nomor_induk_kependudukan'  => ['required', 'numeric', 'digits_between:10,16', 'unique:user_profiles'],
+            'nomor_rekening'            => ['required', 'numeric', 'digits_between:5,20', 'unique:user_profiles'],
             'jenis_kelamin'             => ['required', 'in:l,p'],
             'alamat'                    => ['required', 'string'],
             'kecamatan'                 => ['required', 'string'],

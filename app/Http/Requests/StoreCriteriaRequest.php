@@ -13,8 +13,8 @@ class StoreCriteriaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-         // return Auth::check() && Auth::user()->hasRole('admin');
-        return true;
+        return Auth::check() && Auth::user()->hasRole('admin');
+        // return true;
     }
 
     /**
@@ -31,8 +31,6 @@ class StoreCriteriaRequest extends FormRequest
             'scores'                => ['required', 'array', 'size:5'],
             'scores.*.batas_bawah'  => ['required', 'numeric', 'min:0'],
             'scores.*.skor'         => ['required', 'numeric', 'min:0'],
-            'table_reference'       => ['required'],
-            'column_reference'      => ['required']
         ];
     }
 }

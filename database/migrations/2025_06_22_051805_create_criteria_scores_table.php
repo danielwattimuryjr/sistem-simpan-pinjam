@@ -16,15 +16,9 @@ return new class extends Migration
             $table->foreignId('criteria_id')
                 ->nullable()
                 ->constrained('criterias')
-                ->nullOnDelete()
-                ->nullOnUpdate();
-            $table->string('criteria_name');
-            $table->enum('criteria_category', ['benefit', 'cost']);
-            $table->decimal('criteria_weight', 8, 4);
+                ->cascadeOnDelete();
             $table->decimal('batas_bawah', 12, 2)->nullable();
-            $table->decimal('score', 8, 4);
-            $table->string('table_reference');
-            $table->string('column_reference');
+            $table->integer('score');
             $table->timestamps();
         });
     }

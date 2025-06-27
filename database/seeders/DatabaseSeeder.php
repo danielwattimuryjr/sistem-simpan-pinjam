@@ -14,8 +14,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        $this->call(LaratrustSeeder::class);
-
+        $this->call([
+            LaratrustSeeder::class,
+            CriteriaSeeder::class,
+            // LoanSeeder::class,
+        ]);
+        
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@app.com',
