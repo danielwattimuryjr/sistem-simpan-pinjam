@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('jumlah_tanggungan');
             $table->decimal('jaminan', 12, 2);
             $table->decimal('jumlah_pinjaman', 12, 2);
+            $table->integer('angsuran');
             $table->enum('status', ['pending', 'approved', 'rejected', 'canceled'])->default('pending');
             $table->timestamps();
         });

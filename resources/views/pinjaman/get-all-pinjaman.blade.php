@@ -7,34 +7,18 @@
                 Data Peminjaman Pengguna
             @endif
         </h1>
-
-        @if (Auth::user()->hasRole('nasabah'))
-            <a href="{{ route('pinjaman.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                <i class="fas fa-plus fa-sm text-white-50"></i>
-                Ajukan Pinjaman
-            </a>
-        @endif
     </div>
 
     <div class="row">
         <div class="col">
             @if(Auth::user()->hasRole('admin'))
-                {{-- BATCH AKTIF --}}
                 @if($activeBatches->isNotEmpty())
-                    <h5 class="mb-3 font-weight-bold text-primary">Batch Aktif</h5>
                     @include('pinjaman.partials.evaluation-accordion', [
                         'groupedEvaluations' => $activeBatches,
                         'accordionIdPrefix' => 'aktif',
                     ])
-                @endif
-
-                {{-- RIWAYAT --}}
-                @if($archivedBatches->isNotEmpty())
-                    <h5 class="mt-5 mb-3 font-weight-bold text-secondary">Riwayat Evaluasi</h5>
-                    @include('pinjaman.partials.evaluation-accordion', [
-                        'groupedEvaluations' => $archivedBatches,
-                        'accordionIdPrefix' => 'arsip',
-                    ])
+                @else
+                    Belum ada batch aktif.
                 @endif
             @else
                 <div class="card shadow mb-4">
@@ -44,12 +28,13 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" width="100%" cellspacing="0" id="dataTable">
-                                <thead>
+                                <thead class="thead-light">
                                     <tr>
                                         <th>#</th>
                                         <th>Pendapatan</th>
                                         <th>Tanggungan</th>
                                         <th>Jaminan</th>
+                                        <th>Angsuran</th>
                                         <th>Jumlah</th>
                                         <th>Status</th>
                                     </tr>
@@ -61,6 +46,7 @@
                                         <td>{{ number_format($loan->pendapatan) }}</td>
                                         <td>{{ $loan->jumlah_tanggungan }}</td>
                                         <td>{{ number_format($loan->jaminan) }}</td>
+                                        <td>{{ $loan->angsuran }} Bulan</td>
                                         <td>{{ number_format($loan->jumlah_pinjaman) }}</td>
                                         <td>
                                             @switch($loan->status)

@@ -27,7 +27,6 @@
 </head>
 <body>
     <h3>Hasil Evaluasi WP</h3>
-    <p><strong>Criteria Hash:</strong> {{ $hash }}</p>
 
     <table>
         <thead>
@@ -38,6 +37,7 @@
                 <th>Pendapatan</th>
                 <th>Jaminan</th>
                 <th>Tanggungan</th>
+                <th>Angsuran</th>
                 <th>Pinjaman</th>
                 <th>Nilai WP</th>
                 <th>Normalisasi</th>
@@ -53,6 +53,7 @@
                     <td>{{ number_format($eval->loan->pendapatan) }}</td>
                     <td>{{ number_format($eval->loan->jaminan) }}</td>
                     <td>{{ $eval->loan->jumlah_tanggungan }}</td>
+                    <td>{{ $eval->loan->angsuran }}</td>
                     <td>{{ number_format($eval->loan->jumlah_pinjaman) }}</td>
                     <td>{{ number_format($eval->nilai_wp, 6) }}</td>
                     <td>{{ number_format($eval->normalized_wp, 6) }}</td>

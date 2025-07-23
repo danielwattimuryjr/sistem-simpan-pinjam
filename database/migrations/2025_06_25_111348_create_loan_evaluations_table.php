@@ -21,6 +21,7 @@ return new class extends Migration
             $table->json('details');
             $table->string('criteria_hash')->nullable();
             $table->timestamp('evaluated_at')->nullable();
+            $table->integer('batch_number');
             $table->timestamps();
         });
     }

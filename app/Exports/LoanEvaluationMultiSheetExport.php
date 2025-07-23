@@ -11,6 +11,7 @@ class LoanEvaluationMultiSheetExport implements WithMultipleSheets
 
     public function __construct($evaluations, $criterias)
     {
+
         $this->evaluations = $evaluations;
         $this->criterias = $criterias;
     }

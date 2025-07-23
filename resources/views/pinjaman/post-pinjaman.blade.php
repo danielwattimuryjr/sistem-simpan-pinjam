@@ -55,6 +55,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label>Angsuran</label>
+                            <select class="form-control @error('angsuran') is-invalid @enderror" name="angsuran">
+                                <option value="">Pilih Angsuran</option>
+                                <option value="1" {{ old('angsuran') == 1 ? 'selected' : '' }}>1 Bulan</option>
+                                <option value="2" {{ old('angsuran') == 2 ? 'selected' : '' }}>2 Bulan</option>
+                                <option value="3" {{ old('angsuran') == 3 ? 'selected' : '' }}>3 Bulan</option>
+                                <option value="6" {{ old('angsuran') == 6 ? 'selected' : '' }}>4 Bulan</option>
+                                <option value="12" {{ old('angsuran') == 12 ? 'selected' : '' }}>5 Bulan</option>
+                            </select>
+                            @error('angsuran')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
                             <label>Jumlah Pinjaman</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">

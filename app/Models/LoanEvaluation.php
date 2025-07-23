@@ -12,7 +12,8 @@ class LoanEvaluation extends Model
         'normalized_wp',
         'details',
         'criteria_hash',
-        'evaluated_at'
+        'evaluated_at',
+        'batch_number',
     ];
 
     protected function casts(): array {

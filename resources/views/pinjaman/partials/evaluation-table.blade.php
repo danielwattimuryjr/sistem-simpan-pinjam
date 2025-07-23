@@ -1,4 +1,4 @@
-@if($criteriaDetails->isNotEmpty())
+@if(isset($criteriaDetails) && $criteriaDetails->isNotEmpty())
     <div class="mb-3">
         <h6 class="font-weight-bold">Informasi Kriteria dan Skor:</h6>
         <ol class="pl-3">

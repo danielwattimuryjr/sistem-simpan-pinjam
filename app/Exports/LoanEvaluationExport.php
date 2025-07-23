@@ -12,32 +12,37 @@ class LoanEvaluationExport implements FromCollection, WithHeadings
 
     public function __construct($evaluations)
     {
-        $this->evaluations = $evaluations;
+        if (! $evaluations instanceof \Illuminate\Support\Collection) {
+            $evaluations = collect([$evaluations]);
+        }
+
+        // Pastikan isinya bukan nested Collection
+        $this->evaluations = $evaluations->flatten(1)->filter(function ($item) {
+            return $item instanceof \App\Models\LoanEvaluation;
+        });
     }
 
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     public function collection()
     {
         return $this->evaluations->map(function ($eval) {
             $loan = $eval->loan;
             return [
-                'Nama' => $loan->user->name,
-                'No Rekening' => $loan->user->profile->nomor_rekening,
-                'Pendapatan' => $loan->pendapatan,
-                'Tanggungan' => $loan->jumlah_tanggungan,
-                'Jaminan' => $loan->jaminan,
-                'Pinjaman' => $loan->jumlah_pinjaman,
-                'Nilai WP' => $eval->nilai_wp,
-                'WP Normalisasi' => $eval->normalized_wp,
-                'Status' => $loan->status,
+                $loan->user->name,
+                $loan->user->profile->nomor_rekening ?? '-',
+                $loan->pendapatan,
+                $loan->jumlah_tanggungan,
+                $loan->jaminan,
+                $loan->angsuran,
+                $loan->jumlah_pinjaman,
+                $eval->nilai_wp,
+                $eval->normalized_wp,
+                $loan->status,
             ];
         });
     }
 
     public function headings(): array
     {
-        return ['Nama', 'No Rekening', 'Pendapatan', 'Tanggungan', 'Jaminan', 'Pinjaman', 'Nilai WP', 'WP Normalisasi', 'Status'];
+        return ['Nama', 'No Rekening', 'Pendapatan', 'Tanggungan', 'Jaminan', 'Angsuran', 'Pinjaman', 'Nilai WP', 'WP Normalisasi', 'Status'];
     }
 }

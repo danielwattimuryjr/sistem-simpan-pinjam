@@ -16,7 +16,7 @@ class CriteriaSeeder extends Seeder
         $pendapatan_criteria = Criteria::create([
             'name' => 'Pendapatan',
             'category' => 'benefit',
-            'weight' => 0.45,
+            'weight' => 0.35,
             'table_reference' => 'loans',
             'column_reference' => 'pendapatan'
         ]);
@@ -34,7 +34,7 @@ class CriteriaSeeder extends Seeder
         $jaminan_criteria = Criteria::create([
             'name' => 'Jaminan',
             'category' => 'benefit',
-            'weight' => 0.30,
+            'weight' => 0.25,
             'table_reference' => 'loans',
             'column_reference' => 'jaminan'
         ]);
@@ -53,7 +53,7 @@ class CriteriaSeeder extends Seeder
         $jumlah_tanggungan_criteria = Criteria::create([
             'name' => 'Jumlah Tanggungan',
             'category' => 'cost',
-            'weight' => 0.25,
+            'weight' => 0.20,
             'table_reference' => 'loans',
             'column_reference' => 'jumlah_tanggungan'
         ]);
@@ -61,6 +61,24 @@ class CriteriaSeeder extends Seeder
 
         $this->command->info('Creating criteria scores for Jumlah Tanggungan...');
         $jumlah_tanggungan_criteria->scores()->createMany([
+            ['batas_bawah' => 0, 'score' => 5],
+            ['batas_bawah' => 2, 'score' => 4],
+            ['batas_bawah' => 3, 'score' => 3],
+            ['batas_bawah' => 4, 'score' => 2],
+            ['batas_bawah' => 5, 'score' => 1]
+        ]);
+
+        $angsuran_criteria = Criteria::create([
+            'name' => 'Angsuran',
+            'category' => 'cost',
+            'weight' => 0.20,
+            'table_reference' => 'loans',
+            'column_reference' => 'angsuran'
+        ]);
+        $this->command->info('Angsuran criteria created successfully.');
+
+        $this->command->info('Creating criteria scores for Angsuran...');
+        $angsuran_criteria->scores()->createMany([
             ['batas_bawah' => 0, 'score' => 5],
             ['batas_bawah' => 2, 'score' => 4],
             ['batas_bawah' => 3, 'score' => 3],

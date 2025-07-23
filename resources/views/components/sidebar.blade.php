@@ -34,12 +34,29 @@
         </x-nav-item>
     @endif
 
-    <x-nav-item :href="route('pinjaman.index')" :active="request()->routeIs('pinjaman.*')">
-        <i class="fas fa-fw fa-hand-holding-usd"></i>
-        <span>Pinjaman</span>
+    @if (Auth::user()->hasRole('nasabah'))
+        <x-nav-item :href="route('pinjaman.create')" :active="request()->routeIs('pinjaman.create')">
+            <i class="fas fa-fw fa-hand-holding-usd"></i>
+            <span>Permohonan</span>
+        </x-nav-item>
+    @endif
+
+    <x-nav-item :href="route('pinjaman.index')" :active="request()->routeIs('pinjaman.*') && !request()->routeIs('pinjaman.create') && !request()->routeIs('pinjaman.history')">
+        @if (Auth::user()->hasRole('nasabah'))
+            <i class="fas fa-fw fa-history"></i>
+            <span>History</span>        
+        @else
+            <i class="fas fa-fw fa-hand-holding-usd"></i>
+            <span>Pembiayaan</span>
+        @endif
     </x-nav-item>
 
     @if (Auth::user()->hasRole('admin'))
+        <x-nav-item :href="route('pinjaman.history')" :active="request()->routeIs('pinjaman.history')">
+            <i class="fas fa-fw fa-history"></i>
+            <span>History Pembiayaan</span>
+        </x-nav-item>
+
         <!-- Heading -->
         <div class="sidebar-heading">
             Settings

@@ -1,3 +1,5 @@
+@props(['background' => null])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -32,15 +34,22 @@
         <x-sidebar />
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper" class="d-flex flex-column min-vh-100">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" class="flex-grow-1 position-relative">
+                
+                @if ($background)
+                    <div style="background-image: url('{{ $background }}'); background-size: cover; background-position: center;"
+                        class="position-absolute w-100 h-100 top-0 start-0 z-n1">
+                    </div>
+                    <div class="position-absolute w-100 h-100 top-0 start-0 z-0" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+                @endif
 
                 <x-topbar />
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid position-relative z-1 pt-4">
                     {{ $slot }}
                 </div>
                 <!-- /.container-fluid -->

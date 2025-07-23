@@ -8,7 +8,7 @@ use App\Models\Loan;
 use App\Models\LoanEvaluation;
 use App\Models\Criteria;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LoanEvaluationExport;
+use App\Exports\LoanEvaluationMultiSheetExport;
 use Illuminate\Support\Facades\Auth;
 use App\Services\LoanEvaluator;
 use Illuminate\Http\Request;
@@ -22,27 +22,18 @@ class LoanController extends Controller
     public function index()
     {
         if (Auth::user()->hasRole('admin')) {
-          $groupedEvaluations = LoanEvaluation::with('loan.user.profile')
-            ->get()
-            ->sortByDesc('evaluated_at')
-            ->groupBy(function ($evaluation) {
-                return $evaluation->criteria_hash . '|' . $evaluation->evaluated_at;
-            });
-
-
-            $activeBatches = $groupedEvaluations->filter(function ($evaluations) {
-                return $evaluations->contains(fn ($e) => $e->loan->status === 'pending');
-            });
-
-            $archivedBatches = $groupedEvaluations->filter(function ($evaluations) {
-                return $evaluations->every(fn ($e) => $e->loan->status !== 'pending');
-            });
+            $pendingEvaluations = LoanEvaluation::with('loan.user.profile')
+                ->whereHas('loan', fn ($q) => $q->where('status', 'pending'))
+                ->get()
+                ->sortByDesc('batch_number') // urutkan batch baru dulu
+                ->groupBy(function ($evaluation) {
+                    return $evaluation->criteria_hash . '|' . $evaluation->batch_number;
+                });
 
             $criteriaDetails = Criteria::get();
 
             return view('pinjaman.get-all-pinjaman', [
-                'activeBatches' => $activeBatches,
-                'archivedBatches' => $archivedBatches,
+                'activeBatches' => $pendingEvaluations,
                 'criteriaDetails' => $criteriaDetails,
             ]);
         } else {
@@ -50,7 +41,6 @@ class LoanController extends Controller
             return view('pinjaman.get-all-pinjaman', compact('loans'));
         }
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -68,9 +58,8 @@ class LoanController extends Controller
         $validated = $request->validated();
 
         $loan = Auth::user()->loans()->create($validated);
-        $batchEvaluatedAt = now();
 
-        app(LoanEvaluator::class)->evaluate($loan, $batchEvaluatedAt);
+        app(LoanEvaluator::class)->evaluate($loan);
 
         $flashMessage = 'Data pinjaman berhasil diajukan';
 
@@ -81,24 +70,25 @@ class LoanController extends Controller
     {
         try {
             $hash = $request->input('criteria_hash');
+            $batch = $request->input('batch_number');
 
-            if (!$hash) {
-                return redirect()->back()->with('error', 'Hash tidak ditemukan.');
+            if (!$hash || !$batch) {
+                return redirect()->back()->with('error', 'Hash atau batch tidak ditemukan.');
             }
 
             $evaluations = LoanEvaluation::where('criteria_hash', $hash)
-                ->where('normalized_wp', null)
+                ->where('batch_number', $batch)
+                ->whereNull('normalized_wp')
                 ->whereHas('loan', fn($q) => $q->where('status', 'pending'))
                 ->get();
 
             if ($evaluations->isEmpty()) {
-                return redirect()->back()->with('error', 'Tidak ada data yang bisa dinormalisasi pada batch ini.');
+                return redirect()->back()->with('error', 'Tidak ada data yang bisa dinormalisasi untuk batch ini.');
             }
 
-            // Jalankan normalisasi hanya untuk yang memenuhi syarat
             (new LoanEvaluator())->normalizeEvaluations($evaluations);
 
-            return redirect()->back()->with('success', 'Normalisasi berhasil untuk versi kriteria ini.');
+            return redirect()->back()->with('success', 'Normalisasi berhasil untuk batch #' . $batch);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -129,11 +119,10 @@ class LoanController extends Controller
         return back()->with('success', 'Pinjaman berhasil ditolak.');
     }
 
-    public function export($hash, $type)
+    public function exportOne($evaluationId, $type)
     {
         $evaluations = LoanEvaluation::with('loan.user.profile')
-            ->where('criteria_hash', $hash)
-            ->get();
+            ->find($evaluationId);
 
         $criterias = Criteria::all();
 
@@ -148,10 +137,46 @@ class LoanController extends Controller
 
         if ($type === 'pdf') {
             $pdf = PDF::loadView('exports.pdf-evaluations', [
-                'evaluations' => $evaluations,
-                'hash' => $hash,
+                'evaluations' => [$evaluations],
             ]);
 
+            return $pdf->download("$filename.pdf");
+        }
+
+        abort(404);
+    }
+
+    public function history() {
+        $loans = LoanEvaluation::with('loan.user.profile')
+            ->whereHas('loan', fn ($q) => $q->where('status','<>','pending'))
+            ->get()
+            ->sortByDesc('batch_number');
+            
+        return view('pinjaman.history-pinjaman', [
+            'loans' => $loans,
+        ]);
+    }
+
+    public function exportAll($type)
+    {
+        $evaluations = LoanEvaluation::with('loan.user.profile')
+            ->whereHas('loan', fn ($q) => $q->where('status','<>','pending'))
+            ->orderByDesc('batch_number')
+            ->get();
+        $criterias = Criteria::all();
+        $filename = 'evaluasi_semua_pinjaman_' . now()->format('Ymd_His');
+
+        if (in_array($type, ['csv', 'xlsx'])) {
+            return Excel::download(
+                new LoanEvaluationMultiSheetExport($evaluations, $criterias),
+                "$filename.$type"
+            );
+        }
+
+        if ($type === 'pdf') {
+            $pdf = PDF::loadView('exports.pdf-evaluations', [
+                'evaluations' => $evaluations,
+            ]);
             return $pdf->download("$filename.pdf");
         }
 

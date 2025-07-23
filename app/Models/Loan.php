@@ -12,7 +12,8 @@ class Loan extends Model
         'jumlah_tanggungan',
         'jaminan',
         'jumlah_pinjaman',
-        'status'
+        'status',
+        'angsuran',
     ];
 
     public function user(): BelongsTo {

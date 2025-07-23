@@ -27,6 +27,7 @@ class StoreLoanRequest extends FormRequest
             'jumlah_tanggungan' => ['required', 'integer', 'min:0'],
             'jaminan'           => ['required', 'numeric', 'min:0'],
             'jumlah_pinjaman'   => ['required', 'numeric', 'min:100000'],
+            'angsuran'          => ['required', 'integer', 'min:1'],
         ];
     }
 }
